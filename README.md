@@ -11,7 +11,6 @@
 <img align="right" width="250" src="https://media.giphy.com/media/ZVik7pBtu9dNS/giphy.gif"/>
 
 🎓 B.E. Electronics and Communication Engineering  
-📊 CGPA: **7.0 / 10 (5th Semester)**  
 🔧 Passionate about **VLSI Design & PCB Development**  
 💻 Beginner in **Java, C, DBMS, Data Structures, MongoDB & Node.js**  
 
@@ -45,46 +44,6 @@ To build a strong career in **VLSI design and PCB development**, applying my ski
 </p>
 
 ---
-
-## 📂 Projects  
-
-### 🔸 Dual Mode Home Automation System  
-⚡ Microcontroller-based smart system (manual + wireless control)  
-⚡ PCB designed using Altium Designer  
-⚡ Routing, DRC & Gerber generation  
-
-### 🔸 STM32-Based PCB Design  
-⚡ Embedded PCB design using STM32  
-⚡ Schematic & layout development  
-
-### 🔸 House Rental System (Java Project)  
-⚡ Developed using **Java with OOPS concepts**  
-⚡ Managed house listings, tenant details & rent records  
-⚡ Implemented classes, objects, and basic logic handling  
-
-### 🔸 Customer Feedback Management System (DBMS Project)  
-⚡ Designed database system to store and manage customer feedback  
-⚡ Used DBMS concepts like tables, queries, and relationships  
-⚡ Improved data organization and retrieval  
-
----
-
-## 💼 Internship  
-
-💻 **VLSI Intern – Taras Systems and Solutions**  
-📌 Learning chip design basics, digital circuits & VLSI flow  
-
----
-
-## 📜 Certifications & Achievements  
-
-🏅 NPTEL – Cloud Computing  
-🏅 NPTEL – Software Testing  
-🏅 VLSI Workshop – Dr. Mahalingam College of Engineering  
-🏅 PCB Hackathon – K.S.R College of Technology  
-
----
-
 ## 💪 Strengths  
 
 ✔ Quick Learner 🚀  
@@ -99,13 +58,6 @@ To build a strong career in **VLSI design and PCB development**, applying my ski
 <p align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=tokyonight" height="160"/>
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=YOUR_USERNAME&theme=tokyonight" height="160"/>
-</p>
-
-
-## 🐍 Contribution Snake  
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_USERNAME/output/github-contribution-grid-snake.svg" />
 </p>
 
 ---

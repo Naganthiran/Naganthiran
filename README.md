@@ -1,10 +1,3 @@
-## Hi there 👋
-
-<!--
-**Naganthiran/Naganthiran** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
-
-Here are some ideas to get you started:
-
 ## ⚡ About Me
 
 ### 🧠 Core Knowledge
@@ -13,4 +6,4 @@ Here are some ideas to get you started:
 - 🔌 Knowledge of **Verilog & SystemVerilog**
 - 🖥️ Basic experience in **PCB design using Altium Designer**
 
-📫 Contact: *naganthiran.srinivasn@26gmail.com**
+📫 Contact: **naganthiran.srinivasan26@gmail.com**

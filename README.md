@@ -1,11 +1,7 @@
 <h1 align="center">Hi 👋, I'm Naganthiran S</h1>
 
 <p align="center">
-  <img src="https://readme-typing-svg.herokuapp.com?size=28&duration=3000&color=00F7FF&center=true&vCenter=true&width=700&lines=Electronics+%26+Communication+Engineer;VLSI+Enthusiast;PCB+Designer+%7C+Altium;Java+%26+C+Programmer;Future+Chip+Designer" />
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Profile%20Views-Visitor-blue?style=for-the-badge"/>
+  <img src="https://readme-typing-svg.herokuapp.com?size=28&duration=3000&color=00F7FF&center=true&vCenter=true&width=700&lines=Electronics+%26+Communication+Engineer;VLSI+Enthusiast;PCB+Designer;Java+%26+C+Programmer;Future+Chip+Designer" />
 </p>
 
 ---
@@ -17,8 +13,7 @@
 🎓 B.E. Electronics and Communication Engineering  
 📊 CGPA: **7.0 / 10 (5th Semester)**  
 🔧 Passionate about **VLSI Design & PCB Development**  
-💡 Interested in **Semiconductor & Embedded Systems**  
-💻 Beginner in **Java, C, DBMS & Data Structures**  
+💻 Beginner in **Java, C, DBMS, Data Structures, MongoDB & Node.js**  
 
 ---
 
@@ -32,7 +27,7 @@ To build a strong career in **VLSI design and PCB development**, applying my ski
 
 ### 🔹 PCB & Hardware  
 <p>
-  <img src="https://img.shields.io/badge/Altium-Designer-ff0000?style=for-the-badge&logo=altiumdesigner&logoColor=white"/>
+  <img src="https://img.shields.io/badge/Altium-Designer-red?style=for-the-badge&logo=altiumdesigner&logoColor=white"/>
 </p>
 
 ### 🔹 Programming (Beginner)  
@@ -41,12 +36,12 @@ To build a strong career in **VLSI design and PCB development**, applying my ski
   <img src="https://img.shields.io/badge/C-Programming-blue?style=for-the-badge&logo=c&logoColor=white"/>
 </p>
 
-### 🔹 Core Concepts (Beginner)  
+### 🔹 Core & Database (Beginner)  
 <p>
   <img src="https://img.shields.io/badge/DBMS-Basics-purple?style=for-the-badge"/>
   <img src="https://img.shields.io/badge/Data%20Structures-Basics-green?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/VLSI-Basics-blue?style=for-the-badge"/>
-  <img src="https://img.shields.io/badge/Electronics-Circuits-green?style=for-the-badge"/>
+  <img src="https://img.shields.io/badge/MongoDB-Basics-brightgreen?style=for-the-badge&logo=mongodb"/>
+  <img src="https://img.shields.io/badge/Node.js-Basics-green?style=for-the-badge&logo=node.js"/>
 </p>
 
 ---
@@ -55,13 +50,22 @@ To build a strong career in **VLSI design and PCB development**, applying my ski
 
 ### 🔸 Dual Mode Home Automation System  
 ⚡ Microcontroller-based smart system (manual + wireless control)  
-⚡ PCB designed using **Altium Designer**  
+⚡ PCB designed using Altium Designer  
 ⚡ Routing, DRC & Gerber generation  
 
 ### 🔸 STM32-Based PCB Design  
-⚡ Embedded PCB design using **STM32 microcontroller**  
+⚡ Embedded PCB design using STM32  
 ⚡ Schematic & layout development  
-⚡ Practical exposure to hardware systems  
+
+### 🔸 House Rental System (Java Project)  
+⚡ Developed using **Java with OOPS concepts**  
+⚡ Managed house listings, tenant details & rent records  
+⚡ Implemented classes, objects, and basic logic handling  
+
+### 🔸 Customer Feedback Management System (DBMS Project)  
+⚡ Designed database system to store and manage customer feedback  
+⚡ Used DBMS concepts like tables, queries, and relationships  
+⚡ Improved data organization and retrieval  
 
 ---
 
@@ -93,8 +97,24 @@ To build a strong career in **VLSI design and PCB development**, applying my ski
 ## 📊 GitHub Stats  
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=Naganthiran&show_icons=true&theme=tokyonight&border_radius=10" height="160"/>
-  <img src="https://github-readme-streak-stats.herokuapp.com/?user=Naganthiran&theme=tokyonight&border_radius=10" height="160"/>
+  <img src="https://github-readme-stats.vercel.app/api?username=YOUR_USERNAME&show_icons=true&theme=tokyonight" height="160"/>
+  <img src="https://github-readme-streak-stats.herokuapp.com/?user=YOUR_USERNAME&theme=tokyonight" height="160"/>
+</p>
+
+---
+
+## 📈 LeetCode Stats  
+
+<p align="center">
+  <img src="https://leetcard.jacoblin.cool/YOUR_LEETCODE_USERNAME?theme=dark&font=Karma" />
+</p>
+
+---
+
+## 🐍 Contribution Snake  
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_USERNAME/output/github-contribution-grid-snake.svg" />
 </p>
 
 ---

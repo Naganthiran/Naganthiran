@@ -101,15 +101,6 @@ To build a strong career in **VLSI design and PCB development**, applying my ski
   <img src="https://github-readme-streak-stats.herokuapp.com/?user=YOUR_USERNAME&theme=tokyonight" height="160"/>
 </p>
 
----
-
-## 📈 LeetCode Stats  
-
-<p align="center">
-  <img src="https://leetcard.jacoblin.cool/YOUR_LEETCODE_USERNAME?theme=dark&font=Karma" />
-</p>
-
----
 
 ## 🐍 Contribution Snake  
 

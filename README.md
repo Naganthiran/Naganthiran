@@ -1,5 +1,5 @@
-<h1 align="center">Hi 👋, I'm Naganthiran</h1>
-<h3 align="center">| ECE Student</h3>
+<h1 align="center">Hi 👋, I'm Naganthiran S</h1>
+<h3 align="center"> ECE Student</h3>
 
 ## ⚡ About Me
 

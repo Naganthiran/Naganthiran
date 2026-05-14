@@ -1,0 +1,2340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Naganthiran S | Personal Productivity Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f5f7fa;
+      --surface: #ffffff;
+      --surface-soft: #f0f4ff;
+      --surface-strong: #e8f1ff;
+      --text: #1a1f3a;
+      --muted: #71788a;
+      --primary: #6366f1;
+      --primary-light: #818cf8;
+      --primary-soft: #e0e7ff;
+      --accent: #10b981;
+      --accent-light: #34d399;
+      --border: rgba(99, 102, 241, 0.12);
+      --shadow-sm: 0 4px 12px rgba(15, 23, 42, 0.06);
+      --shadow: 0 10px 32px rgba(99, 102, 241, 0.12);
+      --shadow-lg: 0 20px 60px rgba(99, 102, 241, 0.15);
+      --glow: rgba(99, 102, 241, 0.4);
+    }
+
+    body.dark {
+      color-scheme: dark;
+      --bg: #0d1424;
+      --surface: #0f172a;
+      --surface-soft: #1a2847;
+      --surface-strong: #1e293b;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+      --primary: #818cf8;
+      --primary-light: #a5b4fc;
+      --primary-soft: #312e81;
+      --accent: #34d399;
+      --accent-light: #6ee7b7;
+      --border: rgba(147, 197, 253, 0.15);
+      --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.3);
+      --shadow: 0 10px 32px rgba(99, 102, 241, 0.2);
+      --shadow-lg: 0 20px 60px rgba(99, 102, 241, 0.25);
+      --glow: rgba(129, 140, 248, 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.3), 0 10px 32px rgba(99, 102, 241, 0.1); }
+      50% { box-shadow: 0 0 30px rgba(99, 102, 241, 0.5), 0 20px 50px rgba(99, 102, 241, 0.2); }
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, var(--bg) 0%, #f0f6ff 50%, var(--bg) 100%);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+      color: var(--text);
+      transition: background-color 0.3s ease;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      padding: 32px 32px 32px 320px;
+      transition: padding 0.3s ease;
+      width: 100%;
+    }
+
+    body.auth-page .page-shell {
+      padding-left: 32px;
+    }
+
+    .hamburger {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      z-index: 1001;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(79, 102, 241, 0.2);
+      border-radius: 16px;
+      padding: 12px 16px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: all 0.3s ease;
+      display: none;
+    }
+
+    .hamburger:hover {
+      transform: scale(1.08);
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: var(--shadow-lg);
+    }
+
+    body.dark .hamburger {
+      background: rgba(30, 41, 59, 0.7);
+      color: #e2e8f0;
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 280px;
+      height: 100vh;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.95) 0%, rgba(25, 40, 65, 0.98) 100%);
+      backdrop-filter: blur(20px);
+      color: #e2e8f0;
+      border-right: 1px solid rgba(147, 197, 253, 0.2);
+      box-shadow: 20px 0 80px rgba(0, 0, 0, 0.3);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+      padding: 34px 22px;
+      border-radius: 0 30px 30px 0;
+    }
+
+    .sidebar.open {
+      transform: translateX(0);
+      box-shadow: 20px 0 80px rgba(0, 0, 0, 0.4);
+    }
+
+    .sidebar-nav a {
+      animation: slideIn 0.4s ease backwards;
+    }
+
+    .sidebar-nav a:nth-child(1) { animation-delay: 0.05s; }
+    .sidebar-nav a:nth-child(2) { animation-delay: 0.1s; }
+    .sidebar-nav a:nth-child(3) { animation-delay: 0.15s; }
+    .sidebar-nav a:nth-child(4) { animation-delay: 0.2s; }
+    .sidebar-nav a:nth-child(5) { animation-delay: 0.25s; }
+
+    .close-btn {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      color: #e2e8f0;
+      border-radius: 12px;
+      padding: 6px 10px;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .close-btn {
+      display: none;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.14);
+      color: #ffffff;
+    }
+
+    .close-btn:hover {
+      color: var(--primary);
+    }
+
+    .sidebar-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      padding-bottom: 22px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      margin-bottom: 22px;
+    }
+
+    .sidebar-profile-image {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.22);
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.18);
+    }
+
+    .sidebar-header-text h2 {
+      margin: 0;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.02em;
+    }
+
+    .sidebar-header-text p {
+      margin: 0;
+      color: #cbd5e1;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      max-width: 200px;
+    }
+
+    .sidebar-divider {
+      width: 100%;
+      height: 1px;
+      border: none;
+      margin: 18px 0;
+      background: rgba(148, 163, 184, 0.16);
+    }
+
+    .sidebar-nav {
+      margin-top: 0;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 18px;
+      color: #cbd5e1;
+      text-decoration: none;
+      border-radius: 14px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      margin-bottom: 8px;
+      position: relative;
+      border: 1px solid rgba(147, 197, 253, 0.1);
+    }
+
+    .sidebar-link:hover {
+      background: rgba(129, 140, 248, 0.15);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      transform: translateX(6px);
+      border-color: rgba(147, 197, 253, 0.3);
+      box-shadow: 0 4px 16px rgba(99, 102, 241, 0.15);
+    }
+
+    .sidebar-link.active {
+      background: linear-gradient(135deg, rgba(129, 140, 248, 0.3), rgba(99, 102, 241, 0.2));
+      color: #ffffff;
+      border-color: rgba(147, 197, 253, 0.4);
+      box-shadow: inset 0 0 20px rgba(99, 102, 241, 0.2), 0 4px 16px rgba(99, 102, 241, 0.2);
+    }
+
+    .sidebar-link.logout-link {
+      width: 100%;
+      justify-content: flex-start;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 12px;
+      color: #f8fafc;
+    }
+
+    .sidebar-icon {
+      font-size: 1.2rem;
+    }
+
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      z-index: 999;
+    }
+
+    .sidebar-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    body.auth-page .sidebar,
+    body.auth-page .sidebar-overlay,
+    body.auth-page .hamburger {
+      display: none !important;
+    }
+
+    .auth-shell {
+      min-height: calc(100vh - 80px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 0;
+      background: radial-gradient(circle at top left, rgba(79, 70, 229, 0.12), transparent 24%), radial-gradient(circle at bottom right, rgba(34, 197, 94, 0.14), transparent 30%), transparent;
+    }
+
+    .auth-card {
+      width: min(520px, 100%);
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(18px);
+      border: 1px solid rgba(255, 255, 255, 0.55);
+      border-radius: 28px;
+      box-shadow: 0 30px 70px rgba(15, 23, 42, 0.12);
+      padding: 36px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .auth-card:hover {
+      transform: translateY(-4px);
+    }
+
+    .auth-card h2 {
+      margin: 0 0 10px;
+      font-size: 2rem;
+      color: var(--text);
+    }
+
+    .auth-subtitle {
+      margin: 0 0 24px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .auth-error {
+      min-height: 24px;
+      margin-bottom: 14px;
+      color: #dc2626;
+      font-size: 0.95rem;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+
+    .auth-error.visible {
+      opacity: 1;
+    }
+
+    .auth-form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .floating-field {
+      position: relative;
+      display: grid;
+      gap: 8px;
+    }
+
+    .floating-field input {
+      width: 100%;
+      border-radius: 16px;
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      background: rgba(255, 255, 255, 0.85);
+      color: var(--text);
+      padding: 18px 16px 16px;
+      font-size: 1rem;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .floating-field input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.12);
+    }
+
+    .floating-field label {
+      position: absolute;
+      left: 18px;
+      top: 18px;
+      color: #64748b;
+      font-size: 0.95rem;
+      pointer-events: none;
+      transition: transform 0.2s ease, color 0.2s ease, font-size 0.2s ease;
+    }
+
+    .floating-field input:focus + label,
+    .floating-field input:not(:placeholder-shown) + label {
+      transform: translateY(-24px);
+      font-size: 0.82rem;
+      color: var(--primary);
+    }
+
+    .password-field {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      top: 50%;
+      right: 16px;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--primary);
+      cursor: pointer;
+      font-weight: 700;
+      padding: 6px;
+    }
+
+    .checkbox-field {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text);
+      font-weight: 500;
+      font-size: 0.95rem;
+    }
+
+    .checkbox-field input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--primary);
+    }
+
+    .auth-switch {
+      width: 100%;
+      margin-top: 16px;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 22px;
+      right: 22px;
+      z-index: 1001;
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(79, 102, 241, 0.2);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-3px) rotate(20deg);
+      box-shadow: var(--shadow-lg);
+      background: rgba(255, 255, 255, 0.95);
+    }
+
+    body.dark .theme-toggle {
+      background: rgba(30, 41, 59, 0.7);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .brand-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      border-radius: 16px;
+      background: var(--surface-soft);
+      box-shadow: var(--shadow);
+    }
+
+    .brand-icon span {
+      font-size: 1.4rem;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .nav-link {
+      padding: 12px 18px;
+      border-radius: 14px;
+      background: transparent;
+      color: var(--muted);
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-link.active,
+    .nav-link:hover {
+      background: var(--surface-soft);
+      color: var(--text);
+    }
+
+    .theme-toggle {
+      width: 52px;
+      height: 52px;
+      border-radius: 16px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      display: grid;
+      place-items: center;
+      font-size: 1.2rem;
+      transition: transform 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero {
+      display: grid;
+      gap: 24px;
+      padding: 32px;
+      border-radius: 32px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+      margin-bottom: 28px;
+    }
+
+    .profile-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 40px;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(240, 244, 255, 0.6) 100%);
+      backdrop-filter: blur(20px);
+      border-radius: 28px;
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      animation: fadeInUp 0.8s ease-out;
+      margin-bottom: 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-section::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -20%;
+      width: 300px;
+      height: 300px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.1), transparent);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .profile-section:hover {
+      transform: translateY(-8px);
+      box-shadow: var(--shadow-lg), 0 0 40px rgba(99, 102, 241, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+      border-color: rgba(99, 102, 241, 0.4);
+    }
+
+    body.dark .profile-section {
+      background: linear-gradient(135deg, rgba(25, 40, 65, 0.7) 0%, rgba(30, 41, 59, 0.6) 100%);
+      box-shadow: var(--shadow-lg), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    }
+
+    .profile-image {
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid rgba(99, 102, 241, 0.3);
+      box-shadow: 0 10px 30px rgba(99, 102, 241, 0.25), 0 0 20px rgba(99, 102, 241, 0.15);
+      margin-bottom: 20px;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 10;
+    }
+
+    .profile-image:hover {
+      transform: scale(1.08) rotateY(5deg);
+      box-shadow: 0 15px 40px rgba(99, 102, 241, 0.35), 0 0 30px rgba(99, 102, 241, 0.25);
+      border-color: rgba(99, 102, 241, 0.5);
+    }
+
+    .profile-name {
+      margin: 0 0 12px;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, var(--text) 0%, var(--primary) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .profile-bio {
+      margin: 0 0 20px;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 600px;
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    .badge {
+      padding: 12px 22px;
+      border-radius: 50px;
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(129, 140, 248, 0.05));
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border: 1.5px solid rgba(99, 102, 241, 0.2);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .badge:hover {
+      transform: translateY(-4px);
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.15), rgba(129, 140, 248, 0.1));
+      border-color: rgba(99, 102, 241, 0.4);
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.2);
+    }
+
+    .hero-content {
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(2rem, 2.5vw, 3.2rem);
+      line-height: 1.05;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+      gap: 24px;
+      align-items: center;
+    }
+
+    .profile-card,
+    .stats-card,
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 28px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    .profile-card {
+      display: grid;
+      gap: 18px;
+    }
+
+    .avatar {
+      width: 100%;
+      max-width: 260px;
+      height: 260px;
+      border-radius: 28px;
+      background: linear-gradient(135deg, rgba(79, 70, 229, 0.2), rgba(34, 197, 94, 0.15));
+      display: grid;
+      place-items: center;
+      color: var(--primary);
+      font-size: 5rem;
+    }
+
+    .section-title {
+      margin: 0 0 10px;
+      font-size: 1.3rem;
+    }
+
+    .bio-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .badge {
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+      margin-top: 18px;
+    }
+
+    .stat-card {
+      border-radius: 20px;
+      padding: 24px;
+      background: linear-gradient(135deg, rgba(240, 244, 255, 0.6), rgba(224, 231, 255, 0.4));
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.08);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.12);
+      border-color: rgba(99, 102, 241, 0.25);
+    }
+
+    body.dark .stat-card {
+      background: linear-gradient(135deg, rgba(25, 40, 65, 0.5), rgba(30, 41, 59, 0.4));
+    }
+
+    .stat-card p {
+      margin: 0 0 8px;
+      color: var(--muted);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 1.9rem;
+    }
+
+    .section-panel {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.4s ease;
+      visibility: hidden;
+      max-height: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .section-panel.active {
+      opacity: 1;
+      transform: translateY(0);
+      visibility: visible;
+      max-height: 9999px;
+      pointer-events: all;
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: 1.25fr 0.95fr;
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .activity-form label {
+      display: grid;
+      gap: 10px;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .activity-form input,
+    .activity-form textarea,
+    .activity-form select {
+      width: 100%;
+      border-radius: 16px;
+      border: 1.5px solid rgba(99, 102, 241, 0.15);
+      background: rgba(240, 244, 255, 0.6);
+      backdrop-filter: blur(10px);
+      color: var(--text);
+      padding: 14px 18px;
+      font-size: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.dark .activity-form input,
+    body.dark .activity-form textarea,
+    body.dark .activity-form select {
+      background: rgba(25, 40, 65, 0.5);
+      border-color: rgba(147, 197, 253, 0.15);
+    }
+
+    .activity-form input:focus,
+    .activity-form textarea:focus,
+    .activity-form select:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(240, 244, 255, 0.8);
+      box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.15), inset 0 0 0 2px rgba(99, 102, 241, 0.08);
+    }
+
+    .activity-form {
+      display: grid;
+      gap: 18px;
+      margin-top: 14px;
+    }
+
+    .button-row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      border-radius: 16px;
+      padding: 14px 22px;
+      font-weight: 700;
+      transition: transform 0.2s ease, filter 0.2s ease;
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, var(--primary), #6366f1);
+      box-shadow: 0 20px 40px rgba(79, 70, 229, 0.18);
+    }
+
+    .btn-secondary {
+      background: rgba(240, 244, 255, 0.6);
+      backdrop-filter: blur(10px);
+      color: var(--text);
+      border: 1px solid rgba(99, 102, 241, 0.15);
+      border-radius: 16px;
+      padding: 12px 20px;
+      font-weight: 600;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      background: rgba(99, 102, 241, 0.1);
+      border-color: rgba(99, 102, 241, 0.3);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.12);
+    }
+
+    body.dark .btn-secondary {
+      background: rgba(25, 40, 65, 0.5);
+      border-color: rgba(147, 197, 253, 0.15);
+    }
+
+    body.dark .btn-secondary:hover {
+      background: rgba(99, 102, 241, 0.15);
+    }
+
+    .btn-primary:hover,
+    .btn-secondary:hover {
+      transform: translateY(-1px);
+    }
+
+    .summary-grid,
+    .calendar-grid,
+    .activity-list {
+      display: grid;
+      gap: 18px;
+    }
+
+    .summary-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .summary-card,
+    .calendar-card,
+    .activity-card {
+      border-radius: 24px;
+      padding: 24px;
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+
+    .summary-card h3,
+    .calendar-card h3,
+    .activity-card h3 {
+      margin: 0 0 12px;
+    }
+
+    .summary-value {
+      font-size: 2.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .calendar-header h3 {
+      margin: 0;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .calendar-grid {
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+    }
+
+    .calendar-cell {
+      min-height: 90px;
+      padding: 14px;
+      border-radius: 20px;
+      background: transparent;
+      transition: background 0.2s ease, transform 0.2s ease;
+      display: grid;
+      align-content: start;
+    }
+
+    .calendar-cell:hover {
+      transform: translateY(-2px);
+      background: var(--surface-soft);
+    }
+
+    .calendar-cell.inactive {
+      color: rgba(100, 116, 139, 0.45);
+    }
+
+    .calendar-cell.active.low {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(34, 197, 94, 0.1));
+    }
+
+    .calendar-cell.active.medium {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(34, 197, 94, 0.2));
+    }
+
+    .calendar-cell.active.high {
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.6), rgba(34, 197, 94, 0.3));
+    }
+
+    .activity-card {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .activity-card:hover {
+      transform: translateY(-2px);
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .activity-card p {
+      margin: 0;
+      line-height: 1.75;
+    }
+
+    .activity-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text);
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .empty-state {
+      margin: 0;
+      color: var(--muted);
+      text-align: center;
+      padding: 24px 0;
+    }
+
+    .calendar-activity-list {
+      margin-top: 18px;
+    }
+
+    .calendar-activity-list h4 {
+      margin: 0 0 12px;
+    }
+
+    .calendar-activity-list p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .resume-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 24px;
+    }
+
+    .resume-card {
+      background: var(--surface-strong);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .resume-card h3 {
+      margin: 0 0 16px;
+      font-size: 1.2rem;
+    }
+
+    .resume-card p {
+      margin: 0 0 8px;
+      line-height: 1.6;
+    }
+
+    .resume-card ul {
+      margin: 0;
+      padding-left: 20px;
+    }
+
+    .resume-card li {
+      margin-bottom: 8px;
+      line-height: 1.6;
+    }
+
+    .progress-chart {
+      display: flex;
+      gap: 4px;
+      align-items: end;
+      height: 100px;
+      margin-top: 16px;
+    }
+
+    .chart-bar {
+      flex: 1;
+      background: var(--primary-soft);
+      border-radius: 4px;
+      transition: height 0.3s ease;
+    }
+
+    .chart-bar.active {
+      background: var(--primary);
+    }
+
+    @media (max-width: 980px) {
+      .page-shell {
+        padding: 24px;
+      }
+
+      .hero-grid,
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .sidebar {
+        left: -280px;
+        transform: translateX(-280px);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .sidebar-overlay {
+        display: block;
+      }
+
+      .close-btn {
+        display: block;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell {
+        padding: 18px;
+      }
+
+      .sidebar {
+        width: 100%;
+        max-width: 320px;
+      }
+
+      .profile-image {
+        width: 120px;
+        height: 120px;
+      }
+
+      .profile-name {
+        font-size: 2rem;
+      }
+
+      .profile-bio {
+        font-size: 1rem;
+      }
+
+      .badge {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <button class="hamburger" id="hamburger" aria-label="Open menu">☰</button>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+
+    <div class="sidebar" id="sidebar">
+      <button class="close-btn" id="closeSidebar" aria-label="Close menu">×</button>
+      <div class="sidebar-header">
+        <img src="ME.jpg" alt="Profile photo of Naganthiran S" class="sidebar-profile-image" />
+        <div class="sidebar-header-text">
+          <h2>Naganthiran S</h2>
+          <p>Personal Productivity Dashboard</p>
+        </div>
+      </div>
+      <hr class="sidebar-divider" />
+      <nav class="sidebar-nav">
+        <a href="#" class="sidebar-link active" data-page="home">
+          <span class="sidebar-icon">🏠</span> Home
+        </a>
+        <a href="#" class="sidebar-link" data-page="progress">
+          <span class="sidebar-icon">📊</span> Progress
+        </a>
+        <a href="#" class="sidebar-link" data-page="calendar">
+          <span class="sidebar-icon">📅</span> Calendar
+        </a>
+        <a href="#" class="sidebar-link" data-page="resume">
+          <span class="sidebar-icon">📄</span> Resume
+        </a>
+      </nav>
+      <button class="sidebar-link logout-link" id="logoutBtn" type="button">
+        <span class="sidebar-icon">🔒</span> Logout
+      </button>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <section id="login" class="section-panel active">
+      <div class="auth-shell">
+        <div class="auth-card">
+          <h2>Welcome back</h2>
+          <p class="auth-subtitle">Log in to continue to your productivity dashboard.</p>
+          <div id="loginError" class="auth-error" aria-live="polite"></div>
+
+          <form id="loginForm" class="auth-form">
+            <div class="floating-field">
+              <input type="text" id="loginEmail" placeholder=" " autocomplete="username" />
+              <label for="loginEmail">Email or User ID</label>
+            </div>
+            <div class="floating-field password-field">
+              <input type="password" id="loginPassword" placeholder=" " autocomplete="current-password" />
+              <label for="loginPassword">Password</label>
+              <button type="button" class="password-toggle" data-target="loginPassword">Show</button>
+            </div>
+            <label class="checkbox-field">
+              <input type="checkbox" id="rememberMe" />
+              <span>Remember Me</span>
+            </label>
+            <button type="submit" class="btn-primary">Login</button>
+          </form>
+
+          <button class="btn-secondary auth-switch" id="forgotPasswordBtn">Forgot Password?</button>
+          <button class="btn-secondary auth-switch" id="goToSignup">Go to Signup</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="signup" class="section-panel">
+      <div class="auth-shell">
+        <div class="auth-card">
+          <h2>Create account</h2>
+          <p class="auth-subtitle">Sign up to save your progress and access the dashboard.</p>
+          <div id="signupError" class="auth-error" aria-live="polite"></div>
+
+          <form id="signupForm" class="auth-form">
+            <div class="floating-field">
+              <input type="text" id="signupName" placeholder=" " autocomplete="name" />
+              <label for="signupName">Name</label>
+            </div>
+            <div class="floating-field">
+              <input type="text" id="signupEmail" placeholder=" " autocomplete="username" />
+              <label for="signupEmail">Email or User ID</label>
+            </div>
+            <div class="floating-field password-field">
+              <input type="password" id="signupPassword" placeholder=" " autocomplete="new-password" />
+              <label for="signupPassword">Password</label>
+              <button type="button" class="password-toggle" data-target="signupPassword">Show</button>
+            </div>
+            <div class="floating-field password-field">
+              <input type="password" id="signupConfirm" placeholder=" " autocomplete="new-password" />
+              <label for="signupConfirm">Confirm Password</label>
+              <button type="button" class="password-toggle" data-target="signupConfirm">Show</button>
+            </div>
+            <button type="submit" class="btn-primary">Signup</button>
+          </form>
+
+          <button class="btn-secondary auth-switch" id="goToLogin">Go to Login</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="forgot" class="section-panel">
+      <div class="auth-shell">
+        <div class="auth-card">
+          <h2>Reset password</h2>
+          <p class="auth-subtitle">Enter your registered email and choose a new password.</p>
+          <div id="forgotError" class="auth-error" aria-live="polite"></div>
+
+          <form id="forgotForm" class="auth-form">
+            <div class="floating-field">
+              <input type="text" id="forgotEmail" placeholder=" " autocomplete="username" />
+              <label for="forgotEmail">Registered Email or User ID</label>
+            </div>
+            <div class="floating-field password-field">
+              <input type="password" id="forgotPassword" placeholder=" " autocomplete="new-password" />
+              <label for="forgotPassword">New Password</label>
+              <button type="button" class="password-toggle" data-target="forgotPassword">Show</button>
+            </div>
+            <div class="floating-field password-field">
+              <input type="password" id="forgotConfirm" placeholder=" " autocomplete="new-password" />
+              <label for="forgotConfirm">Confirm New Password</label>
+              <button type="button" class="password-toggle" data-target="forgotConfirm">Show</button>
+            </div>
+            <button type="submit" class="btn-primary">Reset Password</button>
+          </form>
+
+          <button class="btn-secondary auth-switch" id="backToLogin">Back to Login</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="home" class="section-panel">
+      <div class="hero">
+        <div class="profile-section">
+          <img src="ME.jpg" alt="Profile Image of Naganthiran S" class="profile-image">
+          <h1 class="profile-name">Naganthiran S</h1>
+          <p class="profile-bio">ECE student with a passion for coding and VLSI design. Career goal: Get placed in Samsung. Track your daily routines, review progress, and keep your momentum strong.</p>
+          <div class="badge-row">
+            <span class="badge">ECE Student</span>
+            <span class="badge">Coding Enthusiast</span>
+            <span class="badge">VLSI Explorer</span>
+            <span class="badge">Samsung Aspirant</span>
+          </div>
+        </div>
+        <div class="profile-card">
+          <div class="avatar">👨‍💻</div>
+          <h2>About Me</h2>
+          <p>Focused on learning hardware and software with daily goals, project updates, and consistent progress tracking.</p>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <p>Total tasks completed</p>
+              <strong id="homeDays">0</strong>
+            </div>
+            <div class="stat-card">
+              <p>Current streak</p>
+              <strong id="homeStreak">0</strong>
+            </div>
+            <div class="stat-card">
+              <p>Consistency</p>
+              <strong id="homeConsistency">0%</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="progress" class="section-panel">
+      <div class="panel">
+        <div class="section-title">Progress & Updates</div>
+        <p>Log your study, coding, and project sessions to review your progress each day.</p>
+
+        <div class="split-grid">
+          <div>
+            <form id="activityForm" class="activity-form">
+              <label>
+                Date
+                <input type="date" id="activityDate" required />
+              </label>
+              <label>
+                Activity
+                <input type="text" id="activityName" placeholder="Study, Coding, Project" required />
+              </label>
+              <label>
+                Category
+                <select id="activityCategory" required>
+                  <option value="Study">Study</option>
+                  <option value="Coding">Coding</option>
+                  <option value="Exercise">Exercise</option>
+                  <option value="Project">Project</option>
+                </select>
+              </label>
+              <label>
+                Notes
+                <textarea id="activityNotes" rows="4" placeholder="Write a note about your task"></textarea>
+              </label>
+              <div class="button-row">
+                <button type="submit" class="btn-primary" id="formButton">Add Activity</button>
+                <button type="button" class="btn-secondary" id="clearForm">Clear</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="stats-card">
+            <div class="section-title">Daily Summary</div>
+            <div class="summary-grid" style="margin-top:18px;">
+              <div class="summary-card">
+                <h3>Total tasks</h3>
+                <div class="summary-value" id="totalCount">0</div>
+              </div>
+              <div class="summary-card">
+                <h3>Tasks per day</h3>
+                <div class="summary-value" id="dailyCount">0</div>
+              </div>
+            </div>
+            <div class="summary-card" style="margin-top:18px;">
+              <h3>Tasks over time</h3>
+              <p id="tasksPerDay">Add your first activity to see insights.</p>
+              <div id="progressChart" class="progress-chart"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:24px;">
+        <div class="section-title">Activity Cards</div>
+        <p>Swipe through your recent entries and update any task as needed.</p>
+        <div id="activityList" class="activity-list"></div>
+      </div>
+
+      <div class="panel reminder-panel">
+        <div class="section-title">Reminders</div>
+        <p>Schedule quick reminders and receive browser notifications or alert popups when a task arrives.</p>
+        <div class="split-grid" style="grid-template-columns: 1fr 0.9fr; gap: 24px; margin-top: 18px;">
+          <div>
+            <form id="reminderForm" class="reminder-form">
+              <label>
+                Task name
+                <input type="text" id="reminderTask" placeholder="Finish assignment" required />
+              </label>
+              <div class="split-grid" style="grid-template-columns: 1fr 1fr; gap: 16px;">
+                <label>
+                  Date
+                  <input type="date" id="reminderDate" required />
+                </label>
+                <label>
+                  Time
+                  <input type="time" id="reminderTime" required />
+                </label>
+              </div>
+              <button type="submit" class="btn-primary">Set Reminder</button>
+            </form>
+          </div>
+          <div class="stats-card">
+            <div class="section-title">Upcoming Alerts</div>
+            <p id="reminderSummary">Create a reminder to get started.</p>
+          </div>
+        </div>
+        <div id="reminderList" class="reminder-list"></div>
+      </div>
+    </section>
+
+    <section id="calendar" class="section-panel">
+      <div class="panel">
+        <div class="calendar-card">
+          <div class="calendar-header">
+            <div>
+              <h3 id="calendarMonth"></h3>
+              <p id="calendarSubtitle">Select a date to view activities.</p>
+            </div>
+            <div class="calendar-nav">
+              <button class="btn-secondary" id="prevMonth">◀</button>
+              <button class="btn-secondary" id="nextMonth">▶</button>
+            </div>
+          </div>
+          <div class="calendar-weekdays">
+            <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span>
+          </div>
+          <div id="calendarGrid" class="calendar-grid"></div>
+          <div class="calendar-activity-list">
+            <h4 id="selectedDateTitle">Activities for today</h4>
+            <div id="selectedDateActivities"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="resume" class="section-panel">
+      <div class="panel">
+        <div class="section-title">Resume</div>
+        <p>Professional summary and qualifications.</p>
+
+        <div class="resume-grid">
+          <div class="resume-card">
+            <h3>Personal Information</h3>
+            <p><strong>Name:</strong> Naganthiran S</p>
+            <p><strong>Email:</strong> naganthiran@example.com</p>
+            <p><strong>LinkedIn:</strong> linkedin.com/in/naganthiran</p>
+          </div>
+
+          <div class="resume-card">
+            <h3>Skills</h3>
+            <div class="badge-row">
+              <span class="badge">C</span>
+              <span class="badge">Java</span>
+              <span class="badge">DBMS</span>
+              <span class="badge">Data Structures</span>
+              <span class="badge">MongoDB Basics</span>
+              <span class="badge">Node.js Basics</span>
+            </div>
+          </div>
+
+          <div class="resume-card">
+            <h3>Projects</h3>
+            <ul>
+              <li><strong>House Rental System</strong> - Java-based application for managing rental properties.</li>
+              <li><strong>Customer Feedback Management System</strong> - DBMS project for collecting and analyzing customer feedback.</li>
+            </ul>
+          </div>
+
+          <div class="resume-card">
+            <h3>Education</h3>
+            <p><strong>B.E ECE</strong> - M.Kumarasamy College of Engineering</p>
+          </div>
+        </div>
+
+        <div class="button-row" style="margin-top: 24px;">
+          <button class="btn-primary" id="downloadResume">Download Resume (TXT)</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'personalDailyActivityData';
+    const USERS_KEY = 'dashboardUsers';
+    const SESSION_KEY = 'dashboardSession';
+
+    const navLinks = document.querySelectorAll('.nav-link');
+    const sections = document.querySelectorAll('.section-panel');
+    const themeToggle = document.getElementById('themeToggle');
+    const hamburger = document.getElementById('hamburger');
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebar = document.getElementById('closeSidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarLinks = document.querySelectorAll('.sidebar-nav .sidebar-link');
+    const logoutBtn = document.getElementById('logoutBtn');
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+    const loginEmail = document.getElementById('loginEmail');
+    const loginPassword = document.getElementById('loginPassword');
+    const signupName = document.getElementById('signupName');
+    const signupEmail = document.getElementById('signupEmail');
+    const signupPassword = document.getElementById('signupPassword');
+    const signupConfirm = document.getElementById('signupConfirm');
+    const rememberMe = document.getElementById('rememberMe');
+    const loginError = document.getElementById('loginError');
+    const signupError = document.getElementById('signupError');
+    const goToSignup = document.getElementById('goToSignup');
+    const goToLogin = document.getElementById('goToLogin');
+    const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+    const backToLogin = document.getElementById('backToLogin');
+    const forgotForm = document.getElementById('forgotForm');
+    const forgotEmail = document.getElementById('forgotEmail');
+    const forgotPassword = document.getElementById('forgotPassword');
+    const forgotConfirm = document.getElementById('forgotConfirm');
+    const forgotError = document.getElementById('forgotError');
+    const passwordToggles = document.querySelectorAll('.password-toggle');
+    const profileNameElement = document.querySelector('.profile-name');
+    const activityForm = document.getElementById('activityForm');
+    const activityDate = document.getElementById('activityDate');
+    const activityName = document.getElementById('activityName');
+    const activityCategory = document.getElementById('activityCategory');
+    const activityNotes = document.getElementById('activityNotes');
+    const activityList = document.getElementById('activityList');
+    const homeDays = document.getElementById('homeDays');
+    const homeStreak = document.getElementById('homeStreak');
+    const homeConsistency = document.getElementById('homeConsistency');
+    const totalCount = document.getElementById('totalCount');
+    const dailyCount = document.getElementById('dailyCount');
+    const tasksPerDay = document.getElementById('tasksPerDay');
+    const reminderForm = document.getElementById('reminderForm');
+    const reminderTask = document.getElementById('reminderTask');
+    const reminderDate = document.getElementById('reminderDate');
+    const reminderTime = document.getElementById('reminderTime');
+    const reminderList = document.getElementById('reminderList');
+    const reminderSummary = document.getElementById('reminderSummary');
+    const formButton = document.getElementById('formButton');
+    const clearForm = document.getElementById('clearForm');
+    const calendarMonth = document.getElementById('calendarMonth');
+    const calendarSubtitle = document.getElementById('calendarSubtitle');
+    const calendarGrid = document.getElementById('calendarGrid');
+    const selectedDateTitle = document.getElementById('selectedDateTitle');
+    const selectedDateActivities = document.getElementById('selectedDateActivities');
+    const prevMonth = document.getElementById('prevMonth');
+    const nextMonth = document.getElementById('nextMonth');
+    const downloadResume = document.getElementById('downloadResume');
+
+    let activities = [];
+    let selectedDate = new Date();
+    let currentMonth = new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1);
+    let editingIndex = null;
+
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString(undefined, { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+
+    function formatInputDate(date) {
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      return `${year}-${month}-${day}`;
+    }
+
+    const REMINDER_STORAGE_KEY = 'dashboardReminders';
+    let reminders = [];
+
+    function getCategoryIcon(category) {
+      const icons = {
+        Study: '📚',
+        Coding: '💻',
+        Exercise: '🏃',
+        Project: '🚀'
+      };
+      return icons[category] || '📝';
+    }
+
+    function loadReminders() {
+      const stored = localStorage.getItem(REMINDER_STORAGE_KEY);
+      if (!stored) return [];
+      try {
+        return JSON.parse(stored);
+      } catch (error) {
+        console.error('Unable to parse saved reminders.', error);
+        return [];
+      }
+    }
+
+    function saveReminders() {
+      localStorage.setItem(REMINDER_STORAGE_KEY, JSON.stringify(reminders));
+    }
+
+    function formatDateTime(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleString(undefined, {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    }
+
+    function renderReminders() {
+      const now = new Date();
+      if (!reminders.length) {
+        reminderList.innerHTML = '<p class="reminder-empty">No reminders yet. Set one above to stay on track.</p>';
+        reminderSummary.textContent = 'Create a reminder to get started.';
+        return;
+      }
+
+      reminders.sort((a, b) => new Date(a.datetime) - new Date(b.datetime));
+      const nextReminder = reminders.find((reminder) => !reminder.alerted && new Date(reminder.datetime) > now);
+      reminderSummary.textContent = nextReminder
+        ? `Next reminder: ${nextReminder.task} at ${formatDateTime(nextReminder.datetime)}`
+        : 'No upcoming reminders. Add a new reminder to receive notifications.';
+
+      reminderList.innerHTML = reminders
+        .map((reminder, index) => {
+          const reminderDateObj = new Date(reminder.datetime);
+          const isPast = reminder.alerted || reminderDateObj < now;
+          const isSoon = !reminder.alerted && reminderDateObj > now && reminderDateObj - now <= 3600000;
+          const stateLabel = isPast ? 'Triggered' : isSoon ? 'Coming soon' : 'Scheduled';
+          const statusClass = isPast ? 'past' : isSoon ? 'upcoming' : '';
+
+          return `
+            <div class="reminder-card ${statusClass}">
+              <div class="reminder-meta">
+                <strong>${reminder.task}</strong>
+                <span class="reminder-status">${formatDateTime(reminder.datetime)}</span>
+              </div>
+              <div class="reminder-meta">
+                <span class="reminder-status">${stateLabel}</span>
+                <button type="button" class="btn-secondary reminder-delete" data-index="${index}">Delete</button>
+              </div>
+            </div>
+          `;
+        })
+        .join('');
+    }
+
+    function showReminderNotification(taskName) {
+      const message = `Reminder: ${taskName}`;
+      if ('Notification' in window && Notification.permission === 'granted') {
+        new Notification('Personal Productivity Reminder', {
+          body: message,
+          silent: false,
+        });
+      } else {
+        alert(message);
+      }
+    }
+
+    function isSameMinute(dateA, dateB) {
+      return (
+        dateA.getFullYear() === dateB.getFullYear() &&
+        dateA.getMonth() === dateB.getMonth() &&
+        dateA.getDate() === dateB.getDate() &&
+        dateA.getHours() === dateB.getHours() &&
+        dateA.getMinutes() === dateB.getMinutes()
+      );
+    }
+
+    function checkReminders() {
+      const now = new Date();
+      let changed = false;
+
+      reminders.forEach((reminder) => {
+        if (reminder.alerted) return;
+        const reminderTime = new Date(reminder.datetime);
+        if (isSameMinute(now, reminderTime)) {
+          showReminderNotification(reminder.task);
+          reminder.alerted = true;
+          changed = true;
+        }
+      });
+
+      if (changed) {
+        saveReminders();
+        renderReminders();
+      }
+    }
+
+    function addReminder(event) {
+      event.preventDefault();
+      const task = reminderTask.value.trim();
+      const dateValue = reminderDate.value;
+      const timeValue = reminderTime.value;
+      if (!task || !dateValue || !timeValue) return;
+
+      const reminderDateTime = new Date(`${dateValue}T${timeValue}`);
+      if (Number.isNaN(reminderDateTime.getTime())) return;
+
+      reminders.push({
+        task,
+        datetime: reminderDateTime.toISOString(),
+        alerted: false,
+      });
+      saveReminders();
+      renderReminders();
+      reminderForm.reset();
+      reminderDate.focus();
+    }
+
+    function deleteReminder(index) {
+      reminders.splice(index, 1);
+      saveReminders();
+      renderReminders();
+    }
+
+    function initializeNotifications() {
+      if (!('Notification' in window)) return;
+      if (Notification.permission === 'default') {
+        Notification.requestPermission();
+      }
+    }
+
+    function setDefaultReminderDateTime() {
+      const today = new Date();
+      reminderDate.value = formatInputDate(today);
+      reminderTime.value = today.toTimeString().slice(0, 5);
+    }
+
+    function loadActivities() {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (!stored) return [];
+      try {
+        return JSON.parse(stored);
+      } catch (error) {
+        console.error('Unable to parse saved activity data.', error);
+        return [];
+      }
+    }
+
+    function saveActivities() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(activities));
+    }
+
+    function getUsers() {
+      const stored = localStorage.getItem(USERS_KEY);
+      if (!stored) return [];
+      try {
+        return JSON.parse(stored);
+      } catch (error) {
+        console.error('Unable to parse users.', error);
+        return [];
+      }
+    }
+
+    function saveUsers(users) {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+
+    function hashPassword(password) {
+      return btoa(password);
+    }
+
+    function getSession() {
+      try {
+        return JSON.parse(localStorage.getItem(SESSION_KEY));
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function isAuthenticated() {
+      return Boolean(getSession());
+    }
+
+    function setSession(user, remember) {
+      const session = {
+        name: user.name,
+        email: user.email,
+        loggedAt: new Date().toISOString(),
+        remember: Boolean(remember),
+      };
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      if (remember) {
+        localStorage.setItem('dashboardLastUser', user.email);
+      } else {
+        localStorage.removeItem('dashboardLastUser');
+      }
+    }
+
+    function clearSession() {
+      localStorage.removeItem(SESSION_KEY);
+    }
+
+    function showError(element, message) {
+      element.textContent = message;
+      element.classList.toggle('visible', Boolean(message));
+    }
+
+    function updateLoggedUser() {
+      const session = getSession();
+      if (session && profileNameElement) {
+        profileNameElement.textContent = session.name || 'Naganthiran S';
+      }
+    }
+
+    function handleSignup(event) {
+      event.preventDefault();
+      const name = signupName.value.trim();
+      const email = signupEmail.value.trim();
+      const password = signupPassword.value.trim();
+      const confirm = signupConfirm.value.trim();
+
+      showError(signupError, '');
+      if (!name || !email || !password || !confirm) {
+        showError(signupError, 'Please fill in every field.');
+        return;
+      }
+      if (password.length < 6) {
+        showError(signupError, 'Password must be at least 6 characters.');
+        return;
+      }
+      if (password !== confirm) {
+        showError(signupError, 'Passwords do not match.');
+        return;
+      }
+
+      const users = getUsers();
+      const existingUser = users.find((user) => user.email.toLowerCase() === email.toLowerCase());
+      if (existingUser) {
+        showError(signupError, 'A user with this email already exists.');
+        return;
+      }
+
+      const newUser = {
+        name,
+        email,
+        password: hashPassword(password),
+      };
+      users.push(newUser);
+      saveUsers(users);
+      setSession(newUser, true);
+      showError(signupError, '');
+      signupForm.reset();
+      setActivePage('home');
+      updateLoggedUser();
+    }
+
+    function handleLogin(event) {
+      event.preventDefault();
+      const email = loginEmail.value.trim();
+      const password = loginPassword.value.trim();
+      const remember = rememberMe.checked;
+
+      showError(loginError, '');
+      if (!email || !password) {
+        showError(loginError, 'Please enter email and password.');
+        return;
+      }
+
+      const users = getUsers();
+      const encoded = hashPassword(password);
+      const matchingUser = users.find((user) => user.email.toLowerCase() === email.toLowerCase() && user.password === encoded);
+      if (!matchingUser) {
+        showError(loginError, 'Invalid credentials.');
+        return;
+      }
+
+      setSession(matchingUser, remember);
+      showError(loginError, '');
+      loginForm.reset();
+      setActivePage('home');
+      updateLoggedUser();
+    }
+
+    function handlePasswordReset(event) {
+      event.preventDefault();
+      const email = forgotEmail.value.trim();
+      const password = forgotPassword.value.trim();
+      const confirm = forgotConfirm.value.trim();
+
+      showError(forgotError, '');
+      if (!email || !password || !confirm) {
+        showError(forgotError, 'Please fill in every field.');
+        return;
+      }
+      if (password.length < 6) {
+        showError(forgotError, 'Password must be at least 6 characters.');
+        return;
+      }
+      if (password !== confirm) {
+        showError(forgotError, 'Passwords do not match.');
+        return;
+      }
+
+      const users = getUsers();
+      const matchingUser = users.find((user) => user.email.toLowerCase() === email.toLowerCase());
+      if (!matchingUser) {
+        showError(forgotError, 'No account found with this email.');
+        return;
+      }
+
+      matchingUser.password = hashPassword(password);
+      saveUsers(users);
+      setSession(matchingUser, true);
+      showError(forgotError, 'Password reset successful. Redirecting...');
+      forgotForm.reset();
+      setActivePage('home');
+      updateLoggedUser();
+    }
+
+    function logout() {
+      clearSession();
+      setActivePage('login');
+    }
+
+    function togglePasswordField(targetId, button) {
+      const field = document.getElementById(targetId);
+      if (!field) return;
+      field.type = field.type === 'password' ? 'text' : 'password';
+      button.textContent = field.type === 'password' ? 'Show' : 'Hide';
+    }
+
+    function checkAuthOnLoad() {
+      const session = getSession();
+      const lastUser = localStorage.getItem('dashboardLastUser');
+      if (lastUser && loginEmail) {
+        loginEmail.value = lastUser;
+      }
+      if (session) {
+        updateLoggedUser();
+        setActivePage('home');
+      } else {
+        setActivePage('login');
+      }
+    }
+
+    function setActivePage(pageId) {
+      if (pageId !== 'login' && pageId !== 'signup' && pageId !== 'forgot' && !isAuthenticated()) {
+        pageId = 'login';
+      }
+
+      document.body.classList.toggle('auth-page', pageId === 'login' || pageId === 'signup' || pageId === 'forgot');
+
+      navLinks.forEach((link) => {
+        link.classList.toggle('active', link.dataset.page === pageId);
+      });
+      sidebarLinks.forEach((link) => {
+        link.classList.toggle('active', link.dataset.page === pageId);
+      });
+      sections.forEach((section) => {
+        section.classList.toggle('active', section.id === pageId);
+      });
+
+      if (pageId === 'calendar') {
+        renderCalendar();
+      }
+      if (pageId === 'home') {
+        updateLoggedUser();
+      }
+      closeSidebarMenu();
+    }
+
+    function renderButtons() {
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => setActivePage(link.dataset.page));
+      });
+      sidebarLinks.forEach((link) => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          setActivePage(link.dataset.page);
+        });
+      });
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+      }
+      if (goToSignup) {
+        goToSignup.addEventListener('click', () => setActivePage('signup'));
+      }
+      if (goToLogin) {
+        goToLogin.addEventListener('click', () => setActivePage('login'));
+      }
+      if (forgotPasswordBtn) {
+        forgotPasswordBtn.addEventListener('click', () => setActivePage('forgot'));
+      }
+      if (backToLogin) {
+        backToLogin.addEventListener('click', () => setActivePage('login'));
+      }
+      if (forgotForm) {
+        forgotForm.addEventListener('submit', handlePasswordReset);
+      }
+      passwordToggles.forEach((button) => {
+        button.addEventListener('click', () => togglePasswordField(button.dataset.target, button));
+      });
+    }
+
+    function toggleSidebar() {
+      sidebar.classList.toggle('open');
+      sidebarOverlay.classList.toggle('open');
+    }
+
+    function closeSidebarMenu() {
+      sidebar.classList.remove('open');
+      sidebarOverlay.classList.remove('open');
+    }
+
+    function renderActivityList() {
+      activityList.innerHTML = '';
+
+      if (activities.length === 0) {
+        activityList.innerHTML = '<p class="empty-state">No activities added yet. Use the form to log your first task and start building your productivity streak! 🚀</p>';
+        return;
+      }
+
+      activities.slice().reverse().forEach((activity, index) => {
+        const icon = getCategoryIcon(activity.category);
+        const card = document.createElement('div');
+        card.className = 'activity-card';
+        card.innerHTML = `
+          <div class="card-meta">
+            <span>${formatDate(activity.date)}</span>
+            <span class="pill">${icon} ${activity.category}</span>
+          </div>
+          <h3>${activity.title}</h3>
+          <p>${activity.notes ? activity.notes : 'No notes added for this task.'}</p>
+          <div class="activity-actions">
+            <button class="btn-secondary" data-action="edit" data-index="${activities.length - 1 - index}">Edit</button>
+            <button class="btn-secondary" data-action="delete" data-index="${activities.length - 1 - index}">Delete</button>
+          </div>
+        `;
+        activityList.appendChild(card);
+      });
+    }
+
+    function computeStreak() {
+      const uniqueDates = [...new Set(activities.map((item) => item.date))].sort((a, b) => new Date(b) - new Date(a));
+      if (uniqueDates.length === 0) return 0;
+
+      let streak = 1;
+      let current = new Date(uniqueDates[0]);
+
+      for (let i = 1; i < uniqueDates.length; i += 1) {
+        const next = new Date(uniqueDates[i]);
+        const diff = Math.round((current - next) / (1000 * 60 * 60 * 24));
+        if (diff === 1) {
+          streak += 1;
+          current = next;
+        } else {
+          break;
+        }
+      }
+
+      return streak;
+    }
+
+    function updateSummaryCards() {
+      const total = activities.length;
+      const dailyMap = activities.reduce((map, activity) => {
+        map[activity.date] = (map[activity.date] || 0) + 1;
+        return map;
+      }, {});
+      const distinctDays = Object.keys(dailyMap).length;
+      const streak = computeStreak();
+      const consistency = distinctDays > 0 ? Math.round((distinctDays / 30) * 100) : 0;
+
+      homeDays.textContent = total;
+      homeStreak.textContent = `${streak} day${streak === 1 ? '' : 's'}`;
+      homeConsistency.textContent = `${consistency}%`;
+      totalCount.textContent = total;
+      dailyCount.textContent = distinctDays ? Math.max(...Object.values(dailyMap)) : 0;
+      tasksPerDay.textContent = distinctDays ? `Most active day: ${Math.max(...Object.values(dailyMap))} tasks` : 'Add tasks to begin tracking.';
+      renderChart(dailyMap);
+    }
+
+    function resetForm() {
+      activityForm.reset();
+      editingIndex = null;
+      formButton.textContent = 'Add Activity';
+      setDefaultDate();
+    }
+
+    function handleFormSubmit(event) {
+      event.preventDefault();
+      const title = activityName.value.trim();
+      const date = activityDate.value;
+      const category = activityCategory.value;
+      const notes = activityNotes.value.trim();
+      const type = category; // Use category as type
+
+      if (!title || !date) return;
+
+      const activityEntry = {
+        title,
+        date,
+        category,
+        notes,
+        type,
+      };
+
+      if (editingIndex !== null) {
+        activities[editingIndex] = activityEntry;
+      } else {
+        activities.push(activityEntry);
+      }
+
+      saveActivities();
+      renderActivityList();
+      updateSummaryCards();
+      renderCalendar();
+      resetForm();
+    }
+
+    function handleActivityListClick(event) {
+      const button = event.target.closest('button');
+      if (!button) return;
+      const action = button.dataset.action;
+      const index = Number(button.dataset.index);
+      if (action === 'delete') {
+        activities.splice(index, 1);
+        saveActivities();
+        renderActivityList();
+        updateSummaryCards();
+        renderCalendar();
+      }
+      if (action === 'edit') {
+        const activity = activities[index];
+        activityDate.value = activity.date;
+        activityName.value = activity.title;
+        activityNotes.value = activity.notes;
+        editingIndex = index;
+        formButton.textContent = 'Save Changes';
+        setActivePage('progress');
+      }
+    }
+
+    function setDefaultDate() {
+      const today = new Date();
+      activityDate.value = formatInputDate(today);
+    }
+
+    function changeTheme(isDark) {
+      document.body.classList.toggle('dark', isDark);
+      themeToggle.textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('activityTheme', isDark ? 'dark' : 'light');
+    }
+
+    function initializeTheme() {
+      const saved = localStorage.getItem('activityTheme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const isDark = saved ? saved === 'dark' : prefersDark;
+      changeTheme(isDark);
+    }
+
+    function renderCalendar() {
+      const year = currentMonth.getFullYear();
+      const month = currentMonth.getMonth();
+      calendarMonth.textContent = currentMonth.toLocaleDateString(undefined, { month: 'long', year: 'numeric' });
+      calendarGrid.innerHTML = '';
+
+      const firstDay = (new Date(year, month, 1).getDay() + 6) % 7; // Adjust for Monday start
+      const daysInMonth = new Date(year, month + 1, 0).getDate();
+      const dayActivities = activities.reduce((map, activity) => {
+        map[activity.date] = (map[activity.date] || 0) + 1;
+        return map;
+      }, {});
+
+      for (let i = 0; i < firstDay; i += 1) {
+        const cell = document.createElement('div');
+        cell.className = 'calendar-cell inactive';
+        calendarGrid.appendChild(cell);
+      }
+
+      for (let day = 1; day <= daysInMonth; day += 1) {
+        const date = new Date(year, month, day);
+        const formatted = formatInputDate(date);
+        const count = dayActivities[formatted] || 0;
+        const cell = document.createElement('button');
+        cell.type = 'button';
+        cell.className = 'calendar-cell';
+        if (formatted === formatInputDate(selectedDate)) {
+          cell.classList.add('selected');
+        }
+        if (count > 0) {
+          cell.classList.add('active');
+          if (count >= 6) cell.classList.add('high');
+          else if (count >= 3) cell.classList.add('medium');
+          else cell.classList.add('low');
+        }
+        cell.innerHTML = `<span>${day}</span>`;
+        cell.addEventListener('click', () => {
+          selectedDate = new Date(formatted);
+          renderCalendar();
+          updateSelectedDateActivities();
+        });
+        calendarGrid.appendChild(cell);
+      }
+
+      updateSelectedDateActivities();
+    }
+
+    function updateSelectedDateActivities() {
+      const formatted = formatInputDate(selectedDate);
+      const dateLabel = selectedDate.toLocaleDateString(undefined, { weekday: 'long', month: 'short', day: 'numeric' });
+      selectedDateTitle.textContent = `Activities for ${dateLabel}`;
+      const filtered = activities.filter((activity) => activity.date === formatted);
+      if (filtered.length === 0) {
+        selectedDateActivities.innerHTML = '<p class="empty-state">No activities logged for this date.</p>';
+        return;
+      }
+      selectedDateActivities.innerHTML = filtered
+        .map(
+          (activity) => `
+          <div class="activity-card">
+            <div class="card-meta">
+              <span>${activity.type}</span>
+              <span>${formatDate(activity.date)}</span>
+            </div>
+            <h3>${activity.title}</h3>
+            <p>${activity.notes || 'No extra notes.'}</p>
+          </div>`
+        )
+        .join('');
+    }
+
+    function initializeCalendarControls() {
+      prevMonth.addEventListener('click', () => {
+        currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1);
+        renderCalendar();
+      });
+      nextMonth.addEventListener('click', () => {
+        currentMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1);
+        renderCalendar();
+      });
+    }
+
+    function downloadResumeText() {
+      const resumeContent = `
+Naganthiran S
+Email: naganthiran@example.com
+LinkedIn: linkedin.com/in/naganthiran
+
+Skills:
+- C
+- Java
+- DBMS
+- Data Structures
+- MongoDB Basics
+- Node.js Basics
+
+Projects:
+- House Rental System (Java)
+- Customer Feedback Management System (DBMS)
+
+Education:
+- B.E ECE – M.Kumarasamy College of Engineering
+      `.trim();
+
+      const blob = new Blob([resumeContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'Naganthiran_S_Resume.txt';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function renderChart(dailyMap) {
+      const chart = document.getElementById('progressChart');
+      chart.innerHTML = '';
+      const today = new Date();
+      const last7Days = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date(today);
+        date.setDate(today.getDate() - i);
+        last7Days.push(formatInputDate(date));
+      }
+      const maxTasks = Math.max(...last7Days.map(date => dailyMap[date] || 0), 1);
+      last7Days.forEach(date => {
+        const count = dailyMap[date] || 0;
+        const bar = document.createElement('div');
+        bar.className = 'chart-bar';
+        if (count > 0) bar.classList.add('active');
+        bar.style.height = `${(count / maxTasks) * 100}%`;
+        bar.title = `${new Date(date).toLocaleDateString()}: ${count} tasks`;
+        chart.appendChild(bar);
+      });
+    }
+
+    function init() {
+      activities = loadActivities();
+      renderButtons();
+      if (loginForm) {
+        loginForm.addEventListener('submit', handleLogin);
+      }
+      if (signupForm) {
+        signupForm.addEventListener('submit', handleSignup);
+      }
+      activityForm.addEventListener('submit', handleFormSubmit);
+      activityList.addEventListener('click', handleActivityListClick);
+      reminderForm.addEventListener('submit', addReminder);
+      reminderList.addEventListener('click', (event) => {
+        const button = event.target.closest('.reminder-delete');
+        if (!button) return;
+        const index = Number(button.dataset.index);
+        if (!Number.isNaN(index)) {
+          deleteReminder(index);
+        }
+      });
+      clearForm.addEventListener('click', resetForm);
+      themeToggle.addEventListener('click', () => changeTheme(!document.body.classList.contains('dark')));
+      downloadResume.addEventListener('click', downloadResumeText);
+      hamburger.addEventListener('click', toggleSidebar);
+      closeSidebar.addEventListener('click', closeSidebarMenu);
+      sidebarOverlay.addEventListener('click', closeSidebarMenu);
+      initializeTheme();
+      setDefaultDate();
+      setDefaultReminderDateTime();
+      initializeNotifications();
+      reminders = loadReminders();
+      checkAuthOnLoad();
+      renderActivityList();
+      updateSummaryCards();
+      renderCalendar();
+      renderReminders();
+      initializeCalendarControls();
+      setInterval(checkReminders, 1000);
+    }
+
+    init();
+  </script>
+</body>
+</html>
